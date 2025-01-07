@@ -114,7 +114,9 @@ Relay Mesage      <#R12=x>   x:  0=off, 1=on, T=toggle
 #include "uart.h"
 #include "rfm_receive.h"
 #include "rfm_send.h"
+#include "rtc_time.h"
 #include "io.h"
+#include "alphaled.h"
 
 #define ZONE  "OD_1"
 //*********************************************************************************************
@@ -198,6 +200,8 @@ void setup()
     // Hard Reset the RFM module
     
     initialize_tasks();
+    rtc_time_initialize();
+    alphaled_initialize();
 
     #if defined(ADA_M0_RFM69) | defined(ADA_RFM69_WING)
     // Initialze WDT with a 2 sec. timeout

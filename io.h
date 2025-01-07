@@ -23,9 +23,15 @@
 // LED Definitions
 #define PIN_LED_ONBOARD 13  // onboard blinky
 #define LED_NBR_OF      4
-#define PIN_LED_RED     5
-#define PIN_LED_GREEN   4
-#define PIN_LED_BLUE    3
+#define PIN_LED_RED     PIN_LED_ONBOARD
+#define PIN_LED_GREEN   PIN_LED_ONBOARD
+#define PIN_LED_BLUE    PIN_LED_ONBOARD
+
+// https://learn.adafruit.com/adafruit-feather/rtc-datalogging-wings
+// https://www.adafruit.com/product/2922
+// The RTC we'll be using is the PCF8523
+
+
 
 typedef enum
 {

@@ -7,6 +7,7 @@
 #include "main.h"
 #include "rfm69.h"
 #include "rfm_receive.h"
+#include "alphaled.h"
 
 extern module_data_st  me;
 extern RH_RF69 *rf69p;
@@ -42,6 +43,7 @@ void rfm_receive_message(void)
                 io_led_flash(LED_INDX_GREEN,20); 
                 if (receive_msg.len >= MAX_MESSAGE_LEN) receive_msg.len = MAX_MESSAGE_LEN -1;
                 receive_msg.radio_msg[receive_msg.len] = 0;
+                alphaled_print((char*)receive_msg.radio_msg);
                 #ifdef BLUETOOTH_RELAY
                 SerialX.println((char*)receive_msg.radio_msg);
                 #endif
