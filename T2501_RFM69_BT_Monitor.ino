@@ -1,11 +1,14 @@
-/**
-T2311_RFM69_Modem 
+/*****************************************************************************
+T2501_RFM69_BT_Monitor.git
+*******************************************************************************
+
 HW: Adafruit M0 RFM69 Feather or Arduino Pro Mini + RFM69
 
 Send and receive data via UART
 
 *******************************************************************************
-https://github.com/infrapale/T2310_RFM69_TxRx
+https://github.com/infrapale/T2501_RFM69_BT_Monitor.git
+
 https://learn.adafruit.com/adafruit-feather-m0-radio-with-rfm69-packet-radio
 https://learn.sparkfun.com/tutorials/rfm69hcw-hookup-guide/all
 *******************************************************************************
@@ -117,6 +120,7 @@ Relay Mesage      <#R12=x>   x:  0=off, 1=on, T=toggle
 #include "rtc_time.h"
 #include "io.h"
 #include "alphaled.h"
+#include "bt.h"
 
 #define ZONE  "OD_1"
 //*********************************************************************************************
@@ -202,6 +206,7 @@ void setup()
     initialize_tasks();
     rtc_time_initialize();
     alphaled_initialize();
+    bt_initialize();
 
     #if defined(ADA_M0_RFM69) | defined(ADA_RFM69_WING)
     // Initialze WDT with a 2 sec. timeout
@@ -274,7 +279,7 @@ void run_100ms(void)
 
 void debug_print_task(void)
 {
-  atask_print_status(true);
+  //atask_print_status(true);
 }
 
 #ifdef SEND_TEST_MSG

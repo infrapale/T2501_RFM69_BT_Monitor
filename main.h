@@ -17,7 +17,7 @@
 #endif
 
 #define APP_NAME    ((char*)"T2501_RFM69_BT_Monitor")
-#define TASK_NBR_OF  3
+#define TASK_NBR_OF  6
 // #define LED_INDICATION
 
 typedef struct

@@ -1,6 +1,17 @@
 #include "main.h"
 #include "atask.h"
 
+#define BT_MENU_ITEMS  5
+
+
+typedef struct 
+{
+    char tag;
+    char label[20];
+    char msg[80];
+} bt_menu_st;
+
+
 
 typedef struct
 {
@@ -8,25 +19,95 @@ typedef struct
     bool    rx_avail;
 } bt_st;
 
-atask_st bt_handle                 = {"Bluetooth      ", 100,0, 0, 255, 0, 1, bt_task};
+bt_menu_st bt_menu[BT_MENU_ITEMS] =
+{
+    {'A', "Water", "Water Temp 2.1"},
+    {'B', "OD",    "Outdoor Temp -3.1"},
+    {'C', "Tupa",  "Tupa Temp 2.1"},
+    {'D', "Parvi", "Parvi Temp 24.1"},
+    {'1', "Parvi On","{\"Z\":\"TK1\",\"S\":\"RPARV\",\"V\":\"0\",\"R\":\"\"}"}
+};
 
+void bt_task(void);
+
+atask_st bt_handle                 = {"Bluetooth      ", 10,0, 0, 255, 0, 1, bt_task};
+
+bt_st bt;
 
 void bt_initialize(void)
 {
     atask_add_new(&bt_handle);
 }
 
-void bt_rd_uart(void)
+void bt_print_menu(void)
 {
-
-    if (SerialX.available())
+    for( uint8_t i = 0; i < BT_MENU_ITEMS; i++)
     {
-     bt.rx_str = SerialX.readStringUntil('\n');
-    if (bt.rx_str.length()> 0)
-    {
-        bt.rx_avail = true;
-        Serial.println("BT rx is available");
+        SerialX.print(bt_menu[i].tag);
+        SerialX.print("> ");
+        SerialX.println(bt_menu[i].label);
     }
 }
 
+void bt_rd_uart(void)
+{
+    if (SerialX.available())
+    {
+        bt.rx_str = SerialX.readStringUntil(0x0D);
+        if (bt.rx_str.length()> 0)
+        {
+            bt.rx_avail = true;
+            //Serial.println("BT rx is available");
+            Serial.print(bt.rx_str);
+            bt_print_menu();
+        }
+    }
+}
+
+
+void bt_run_menu(char c)
+{
+    bool menu_ok = false;
+    for( uint8_t i = 0; i < BT_MENU_ITEMS; i++)
+    {
+        if (c == bt_menu[i].tag)
+        {
+          SerialX.println(bt_menu[i].msg);
+          menu_ok = true;
+          break;
+        }
+    }
+    if (!menu_ok && (c != 0x0a) && (c != 0x0d)) 
+    {
+        Serial.println(c,HEX); 
+        bt_print_menu();
+
+    }
+   
+}
  // if ((uart.rx.str.charAt(0) != '<') || 
+
+ void bt_task(void)
+ {
+    switch(bt_handle.state)
+    {
+      case 0:
+        bt_handle.state = 10;
+        break;
+      case 10:
+          //bt_rd_uart();
+          if(SerialX.available())
+          {
+            char c = SerialX.read();
+            bt_run_menu(c);
+
+            // if (c == 'H')
+            // {
+            //     Serial.println(c,HEX);
+            //     bt_print_menu();
+            // }
+
+          }
+          break;
+    }
+ }

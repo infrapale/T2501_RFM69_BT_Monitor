@@ -46,7 +46,8 @@ void rfm_receive_message(void)
                 alphaled_print((char*)receive_msg.radio_msg);
                 #ifdef BLUETOOTH_RELAY
                 SerialX.println((char*)receive_msg.radio_msg);
-                #endif
+                #endif                
+                Serial.println((char*)receive_msg.radio_msg); 
                 #ifdef DEBUG_PRINT
                 Serial.print("Received [");Serial.print(receive_msg.len);Serial.print("]: ");
                 Serial.println((char*)receive_msg.radio_msg);               
