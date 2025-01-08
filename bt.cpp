@@ -1,13 +1,14 @@
 #include "main.h"
 #include "atask.h"
+#include "rfm_send.h"
 
-#define BT_MENU_ITEMS  5
+#define BT_MENU_ITEMS  10
 
 
 typedef struct 
 {
     char tag;
-    char label[20];
+    char label[16];
     char msg[80];
 } bt_menu_st;
 
@@ -21,11 +22,30 @@ typedef struct
 
 bt_menu_st bt_menu[BT_MENU_ITEMS] =
 {
-    {'A', "Water", "Water Temp 2.1"},
-    {'B', "OD",    "Outdoor Temp -3.1"},
-    {'C', "Tupa",  "Tupa Temp 2.1"},
-    {'D', "Parvi", "Parvi Temp 24.1"},
-    {'1', "Parvi On","{\"Z\":\"TK1\",\"S\":\"RPARV\",\"V\":\"0\",\"R\":\"\"}"}
+    //     012345678901
+    {'A', "Water",      "{\"Z\":\"Dock\",\"S\":\"Water\",\"V\":1.10,\"R\":\"\"}"},
+    {'B', "OD",         "{\"Z\":\"VA_OD\",\"S\":\"Temp\",\"V\":1.00,\"R\":\"\"}"},
+    {'C', "Tupa",       "{\"Z\":\"Tupa\",\"S\":\"Temp\",\"V\":20.20,\"R\":\"\"}"},
+    {'D', "Parvi",      "{\"Z\":\"Parvi\",\"S\":\"Temp\",\"V\":26.10,\"R\":\"\"}"},
+    {'E', "Parvi",      "{\"Z\":\"Parvi\",\"S\":\"Temp\",\"V\":26.10,\"R\":\"\"}"},
+    {'F', "Parvi",      "{\"Z\":\"Parvi\",\"S\":\"Temp\",\"V\":26.10,\"R\":\"\"}"},
+    {'1', "Parvi On",   "{\"Z\":\"TK1\",\"S\":\"RPARV\",\"V\":\"0\",\"R\":\"\"}"},
+    {'2', "Tupa Toggle","{\"Z\":\"TK1\",\"S\":\"RTUP1\",\"V\":\"T\",\"R\":\"\"}"},
+    {'3', "Sauna On",   "{\"Z\":\"TK1\",\"S\":\"RSAUN\",\"V\":\"1\",\"R\":\"\"}"},
+    {'4', "Sauna Off",  "{\"Z\":\"TK1\",\"S\":\"RSAUN\",\"V\":\"0\",\"R\":\"\"}"},
+    /*
+    {'1', "R-2-1 On",   "{\"Z\":\"TK1\",\"S\":\"R-2-1\",\"V\":\"1\",\"R\":\"\"}"},
+    {'2', "R-2-1 Off",  "{\"Z\":\"TK1\",\"S\":\"R-2-1\",\"V\":\"0\",\"R\":\"\"}"},
+    {'3', "R-2-2 On",   "{\"Z\":\"TK1\",\"S\":\"R-2-2\",\"V\":\"1\",\"R\":\"\"}"},
+    {'4', "R-2-2 Off",  "{\"Z\":\"TK1\",\"S\":\"R-2-2\",\"V\":\"0\",\"R\":\"\"}"},
+    {'5', "R-2-4 On",   "{\"Z\":\"TK1\",\"S\":\"R-2-4\",\"V\":\"1\",\"R\":\"\"}"},
+    {'6', "R-2-4 Off",  "{\"Z\":\"TK1\",\"S\":\"R-2-4\",\"V\":\"0\",\"R\":\"\"}"},
+    {'7', "R-2-6 On",   "{\"Z\":\"TK1\",\"S\":\"R-2-6\",\"V\":\"1\",\"R\":\"\"}"},
+    {'8', "R-2-6 Off",  "{\"Z\":\"TK1\",\"S\":\"R-2-6\",\"V\":\"0\",\"R\":\"\"}"},
+    {'9', "R-2-7 On",   "{\"Z\":\"TK1\",\"S\":\"R-2-7\",\"V\":\"1\",\"R\":\"\"}"},
+    {'0', "R-2-7 Off",  "{\"Z\":\"TK1\",\"S\":\"R-2-7\",\"V\":\"0\",\"R\":\"\"}"},
+    */
+
 };
 
 void bt_task(void);
@@ -68,11 +88,14 @@ void bt_rd_uart(void)
 void bt_run_menu(char c)
 {
     bool menu_ok = false;
+    char cup = c;
+    if ((c >='a') && (c<='z')) cup += 'A'-'a';
     for( uint8_t i = 0; i < BT_MENU_ITEMS; i++)
     {
-        if (c == bt_menu[i].tag)
+        if (cup == bt_menu[i].tag)
         {
           SerialX.println(bt_menu[i].msg);
+          rfm_send_radiate_msg(bt_menu[i].msg);
           menu_ok = true;
           break;
         }
