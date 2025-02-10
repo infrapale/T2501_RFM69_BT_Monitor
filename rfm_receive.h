@@ -7,6 +7,8 @@
 typedef struct
 {
     char            radio_msg[MAX_MESSAGE_LEN];
+    char            msg_buff[MAX_MESSAGE_LEN];
+    bool            data_in_msg_buff;
     uint8_t         len;
     bool            avail;
     int8_t          rssi;

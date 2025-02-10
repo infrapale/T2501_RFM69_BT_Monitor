@@ -16,7 +16,7 @@ typedef struct
 } alphaled_st;
 
 alphaled_st alphaled;
-atask_st alpha_handle                 = {"Alpha LED     ", 300,0, 0, 255, 0, 1, alphaled_task};
+atask_st alpha_handle                 = {"Alpha LED      ", 300,0, 0, 255, 0, 1, alphaled_task};
 
 void alphaled_fill_disp(void)
 {

@@ -118,6 +118,7 @@ Relay Mesage      <#R12=x>   x:  0=off, 1=on, T=toggle
 #include "rfm_receive.h"
 #include "rfm_send.h"
 #include "rtc_time.h"
+#include "logger.h"
 #include "io.h"
 #include "alphaled.h"
 #include "bt.h"
@@ -131,7 +132,7 @@ Relay Mesage      <#R12=x>   x:  0=off, 1=on, T=toggle
 RH_RF69         rf69(RFM69_CS, RFM69_INT);
 RH_RF69         *rf69p;
 module_data_st  me = {'X','1'};
-time_type       MyTime = {2023, 11,01,1,01,55}; 
+//time_type       MyTime = {2023, 11,01,1,01,55}; 
 
 #define NBR_TEST_MSG  4
 #define LEN_TEST_MSG  32
@@ -207,6 +208,7 @@ void setup()
     rtc_time_initialize();
     alphaled_initialize();
     bt_initialize();
+    logger_initialize();
 
     #if defined(ADA_M0_RFM69) | defined(ADA_RFM69_WING)
     // Initialze WDT with a 2 sec. timeout
@@ -260,26 +262,14 @@ void run_100ms(void)
     static uint8_t ms100 = 0;
     if (++ms100 >= 10 )
     {
-        ms100 = 0;
-        if (++MyTime.second > 59 )
-        {
-          MyTime.second = 0;
-          if (++MyTime.minute > 59 )
-          {    
-            MyTime.minute = 0;
-            if (++MyTime.hour > 23)
-            {
-                MyTime.hour = 0;
-            }
-          }   
-      }
     }
     io_run_100ms();
 }
 
 void debug_print_task(void)
 {
-  //atask_print_status(true);
+  rtc_time_print_time();
+  atask_print_status(true);
 }
 
 #ifdef SEND_TEST_MSG

@@ -8,6 +8,7 @@
 #include "rfm69.h"
 #include "rfm_receive.h"
 #include "alphaled.h"
+#include "logger.h"
 
 extern module_data_st  me;
 extern RH_RF69 *rf69p;
@@ -26,6 +27,7 @@ rfm_receive_msg_st *rfm_receive_get_data_ptr(void)
 void rfm_receive_initialize()
 {
     receive_msg.avail = false;
+    //receive_msg.data_in_msg_buff = false;
 }
 
 
@@ -46,7 +48,8 @@ void rfm_receive_message(void)
                 alphaled_print((char*)receive_msg.radio_msg);
                 #ifdef BLUETOOTH_RELAY
                 SerialX.println((char*)receive_msg.radio_msg);
-                #endif                
+                #endif            
+                logger_add_msg((char*)receive_msg.radio_msg);  
                 Serial.println((char*)receive_msg.radio_msg); 
                 #ifdef DEBUG_PRINT
                 Serial.print("Received [");Serial.print(receive_msg.len);Serial.print("]: ");
@@ -74,5 +77,6 @@ void rfm_receive_clr_message_flag(void)
 {
     receive_msg.avail = false;
 }
+
 
 

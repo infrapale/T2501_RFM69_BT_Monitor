@@ -79,3 +79,25 @@ void rtc_time_print_time(void)
     Serial.println();
 
 }
+
+void rtc_time_get_stamp(char *stamp_str)
+{
+  sprintf(stamp_str,"%4d-%02d-%02d %02d:%02d:%02d",
+      rtc_time.now.year(),
+      rtc_time.now.month(),
+      rtc_time.now.day(),
+      rtc_time.now.hour(),
+      rtc_time.now.minute(),
+      rtc_time.now.second()
+    );
+}
+
+void rtc_time_get_date_str(char *date_str)
+{
+  sprintf(date_str,"%4d%02d%02d",
+      rtc_time.now.year(),
+      rtc_time.now.month(),
+      rtc_time.now.day()
+    );
+}
+

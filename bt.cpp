@@ -4,6 +4,7 @@
 
 #define BT_MENU_ITEMS  10
 
+typedef void (*task_cb)(void);
 
 typedef struct 
 {
@@ -12,6 +13,16 @@ typedef struct
     char msg[80];
 } bt_menu_st;
 
+typedef struct 
+{
+    uint8_t sub;
+    char tag;
+    char label[16];
+    uint8_t next_sub;
+    uint8_t msg_indx;
+    task_cb cb;
+} bt_menu2_st;
+
 
 
 typedef struct
@@ -19,6 +30,25 @@ typedef struct
     String rx_str; 
     bool    rx_avail;
 } bt_st;
+
+void dummy_cb(){}
+
+bt_menu2_st menu[] 
+{   //         0123456789012345
+    { 0, 'T', "Time           ", 1, 0, dummy_cb },
+    { 0, 'P', "Print Today    ", 0, 0, dummy_cb },
+    { 0, 'D', "Directory      ", 1, 0, dummy_cb },
+    { 0, 'S', "Send Sensor    ", 2, 0, dummy_cb },
+    { 0, 'R', "Send Relay     ", 0, 0, dummy_cb },
+    { 1, 'P', "Print Time     ", 1, 0, dummy_cb },
+    { 1, 'S', "Set Time       ", 1, 0, dummy_cb },
+    { 1, 'Q', "Quit           ", 0, 0, dummy_cb },
+    { 2, 'W', "Water Temp     ", 1, 1, dummy_cb },
+    { 2, 'O', "Outdoor Temp   ", 1, 2, dummy_cb },
+    { 2, 'Q', "Quit           ", 0, 2, dummy_cb },
+
+}
+
 
 bt_menu_st bt_menu[BT_MENU_ITEMS] =
 {
