@@ -30,7 +30,7 @@
 #include "logger.h"
 #include "rtc_time.h"
 
-const int chipSelect = 6;
+const int chipSelect = LOGGER_SD_CS;
 logger_st  logger;
 
 void logger_task();

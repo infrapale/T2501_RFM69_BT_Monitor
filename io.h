@@ -7,11 +7,13 @@
 // #define RFM69_IRQN    0  // Pin 2 is IRQ 0!
 #define RFM69_RST     4
 #endif
+
+
 #ifdef  ADA_RFM69_WING
-#define RFM69_CS      10
-#define RFM69_INT     6
+#define RFM69_CS      18
+#define RFM69_INT     5
 // #define RFM69_IRQN    0  // Pin 2 is IRQ 0!
-#define RFM69_RST     11
+#define RFM69_RST     18
 #endif
 
 #ifdef PRO_MINI_RFM69
@@ -20,6 +22,12 @@
 #define RFM69_IRQN    0  // Pin 2 is IRQ 0!
 #define RFM69_RST     9
 #endif
+
+#define LOGGER_SD_CS  6 
+#define TFT_CS        11
+#define TFT_DC        12
+
+
 // LED Definitions
 #define PIN_LED_ONBOARD 13  // onboard blinky
 #define LED_NBR_OF      4
