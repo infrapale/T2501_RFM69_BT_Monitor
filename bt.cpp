@@ -1,8 +1,11 @@
 #include "main.h"
 #include "atask.h"
 #include "rfm_send.h"
+#include "logger.h"
 
 #define BT_MENU_ITEMS  10
+#define MENU_ITEMS  11
+
 
 typedef void (*task_cb)(void);
 
@@ -29,25 +32,39 @@ typedef struct
 {
     String rx_str; 
     bool    rx_avail;
+    uint8_t menu_indx;
 } bt_st;
 
 void dummy_cb(){}
 
+typedef enum
+{
+  BT_MENU_MAIN = 0,
+  BT_MENU_TIME,
+  BT_MENU_FILE,
+  BT_MENU_TEST,
+  BT_MENU_NBR_OF
+} bt_menu_et;
+
+char bt_menu_level_label[BT_MENU_NBR_OF][8] =
+{
+    "Main", "Time", "File", "Test"
+};
+
 bt_menu2_st menu[] 
 {   //         0123456789012345
-    { 0, 'T', "Time           ", 1, 0, dummy_cb },
-    { 0, 'P', "Print Today    ", 0, 0, dummy_cb },
-    { 0, 'D', "Directory      ", 1, 0, dummy_cb },
-    { 0, 'S', "Send Sensor    ", 2, 0, dummy_cb },
-    { 0, 'R', "Send Relay     ", 0, 0, dummy_cb },
-    { 1, 'P', "Print Time     ", 1, 0, dummy_cb },
-    { 1, 'S', "Set Time       ", 1, 0, dummy_cb },
-    { 1, 'Q', "Quit           ", 0, 0, dummy_cb },
-    { 2, 'W', "Water Temp     ", 1, 1, dummy_cb },
-    { 2, 'O', "Outdoor Temp   ", 1, 2, dummy_cb },
-    { 2, 'Q', "Quit           ", 0, 2, dummy_cb },
-
-}
+    { BT_MENU_MAIN, 'T', "Time           ", BT_MENU_TIME, 0, dummy_cb },
+    { BT_MENU_MAIN, 'P', "Print Today    ", BT_MENU_FILE, 0, dummy_cb },
+    { BT_MENU_MAIN, 'D', "Directory      ", BT_MENU_FILE, 0, logger_directory},
+    { BT_MENU_MAIN, 'S', "Send Sensor    ", BT_MENU_TEST, 0, dummy_cb },
+    { BT_MENU_MAIN, 'R', "Send Relay     ", BT_MENU_TEST, 0, dummy_cb },
+    { BT_MENU_TIME, 'P', "Print Time     ", BT_MENU_TIME, 0, dummy_cb },
+    { BT_MENU_TIME, 'S', "Set Time       ", BT_MENU_TIME, 0, dummy_cb },
+    { BT_MENU_TIME, 'Q', "Quit           ", BT_MENU_MAIN, 0, dummy_cb },
+    { BT_MENU_FILE, 'W', "Water Temp     ", BT_MENU_MAIN, 1, dummy_cb },
+    { BT_MENU_FILE, 'O', "Outdoor Temp   ", BT_MENU_TEST, 2, dummy_cb },
+    { BT_MENU_FILE, 'Q', "Quit           ", BT_MENU_MAIN, 2, dummy_cb },
+};
 
 
 bt_menu_st bt_menu[BT_MENU_ITEMS] =
@@ -87,15 +104,21 @@ bt_st bt;
 void bt_initialize(void)
 {
     atask_add_new(&bt_handle);
+    bt.menu_indx = 0;
 }
 
 void bt_print_menu(void)
 {
-    for( uint8_t i = 0; i < BT_MENU_ITEMS; i++)
+    SerialX.print(bt_menu_level_label[bt.menu_indx]);
+    SerialX.println(">>>");
+    for( uint8_t i = 0; i < MENU_ITEMS; i++)
     {
-        SerialX.print(bt_menu[i].tag);
-        SerialX.print("> ");
-        SerialX.println(bt_menu[i].label);
+        if(menu[i].sub == bt.menu_indx)
+        {
+            SerialX.print(menu[i].tag);
+            SerialX.print("> ");
+            SerialX.println(menu[i].label);
+        }
     }
 }
 
@@ -120,12 +143,13 @@ void bt_run_menu(char c)
     bool menu_ok = false;
     char cup = c;
     if ((c >='a') && (c<='z')) cup += 'A'-'a';
-    for( uint8_t i = 0; i < BT_MENU_ITEMS; i++)
+    for( uint8_t i = 0; i < MENU_ITEMS; i++)
     {
-        if (cup == bt_menu[i].tag)
+        if (cup == menu[i].tag)
         {
-          SerialX.println(bt_menu[i].msg);
-          rfm_send_radiate_msg(bt_menu[i].msg);
+          SerialX.println(menu[i].label);
+          bt.menu_indx = menu[i].next_sub;
+          //rfm_send_radiate_msg(bt_menu[i].msg);
           menu_ok = true;
           break;
         }

@@ -112,6 +112,7 @@ Relay Mesage      <#R12=x>   x:  0=off, 1=on, T=toggle
 #include <RH_RF69.h>
 #include <VillaAstridCommon.h>
 #include "atask.h"
+#include "watchdog.h"
 #include "json.h"
 #include "rfm69.h"
 #include "uart.h"
@@ -189,9 +190,10 @@ void setup()
     Serial.begin(9600);
     SerialX.begin(9600);
 
-    Serial.print("T2311_RFM69_Modem"); Serial.print(" Compiled: ");
+    Serial.print("T2501_RFM69_BT_Monitor"); Serial.print(" Compiled: ");
     Serial.print(__DATE__); Serial.print(" ");
     Serial.print(__TIME__); Serial.println();
+    watchdog_initialize(8000);
 
     
     uart_initialize();

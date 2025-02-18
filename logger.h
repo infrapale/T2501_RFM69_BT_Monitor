@@ -15,4 +15,7 @@ typedef struct
 void logger_initialize(void);
 
 void logger_add_msg(char *new_msg);
+
+void logger_directory(void);
+
 #endif

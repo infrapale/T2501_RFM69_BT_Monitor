@@ -3,6 +3,7 @@
 #include "RTClib.h"
 #include "rtc_time.h"
 #include "atask.h"
+#include "watchdog.h"
 
 
 RTC_PCF8523 rtc;
@@ -48,6 +49,8 @@ void rtc_time_initialize(void)
 
 void rtc_time_task(void)
 {
+  Watchdog.reset();
+
   if (rtc_time.rtc_is_ok)
   {
     rtc_time.now = rtc.now();

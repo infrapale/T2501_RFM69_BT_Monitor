@@ -43,11 +43,14 @@ void rfm_receive_message(void)
             if (receive_msg.len > 0)
             {   
                 io_led_flash(LED_INDX_GREEN,20); 
+                receive_msg.rssi = rf69p->lastRssi();
                 if (receive_msg.len >= MAX_MESSAGE_LEN) receive_msg.len = MAX_MESSAGE_LEN -1;
                 receive_msg.radio_msg[receive_msg.len] = 0;
                 alphaled_print((char*)receive_msg.radio_msg);
                 #ifdef BLUETOOTH_RELAY
-                SerialX.println((char*)receive_msg.radio_msg);
+                SerialX.print((char*)receive_msg.radio_msg);
+                SerialX.print(" RSSI=");
+                SerialX.println(receive_msg.rssi);
                 #endif            
                 logger_add_msg((char*)receive_msg.radio_msg);  
                 Serial.println((char*)receive_msg.radio_msg); 
@@ -59,7 +62,6 @@ void rfm_receive_message(void)
                 Serial.print("  RSSI: ");
                 Serial.println(rf69p->lastRssi(), DEC);
                 #endif
-                receive_msg.rssi = rf69p->lastRssi();
 
             }
         }
